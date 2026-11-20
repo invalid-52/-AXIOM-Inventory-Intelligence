@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AXIOM | Travel Inventory Intelligence & AI Copilot</title>
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Visualization Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  
+  <!-- Enterprise Stylesheet -->
+  <link rel="stylesheet" href="css/axiom.css">
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="pl-logo-wrap">
+      <div class="pl-logo">AXIOM 2.0</div>
+      <div class="pl-sub">Predictive Inventory Intelligence & AI Copilot</div>
+      <div class="pl-disclosure">Demonstration data — synthetic, not live TBO data</div>
+    </div>
+    <div class="pl-bar-wrap">
+      <div class="pl-bar"></div>
+    </div>
+    <div class="pl-status">CALIBRATING NEURAL MODELS & PROCUREMENT SOLVER...</div>
+  </div>
+
+  <!-- APPLICATION SHELL -->
+  <div id="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-header">
+        <div class="sb-brand">
+          <div class="sb-logo-icon">AX</div>
+          <div class="sb-brand-text">
+            <span class="sb-brand-name">AXIOM</span>
+            <span class="sb-brand-sub">Inventory Intelligence</span>
+          </div>
+        </div>
+        <div class="sb-tag">AI ENGINE v2.0 · GROQ LLM</div>
+      </div>
+
+      <nav class="sb-nav">
+        <div class="sb-section-label">COMMAND & DECISIONS</div>
+        <div class="nav-item active" data-section="overview">
+          <span class="nav-icon">⬡</span>
+          <span>Executive Overview</span>
+        </div>
+        <div class="nav-item" data-section="copilot">
+          <span class="nav-icon">✦</span>
+          <span>AI Copilot</span>
+          <span class="nav-badge info">LIVE AI</span>
+        </div>
+        <div class="nav-item" data-section="optimizer">
+          <span class="nav-icon">⚡</span>
+          <span>Procurement Optimizer</span>
+          <span class="nav-badge ok">CORE</span>
+        </div>
+
+        <div class="sb-section-label">FORECASTING & INVENTORY</div>
+        <div class="nav-item" data-section="forecasting">
+          <span class="nav-icon">📈</span>
+          <span>Demand Forecasting</span>
+        </div>
+        <div class="nav-item" data-section="inventory">
+          <span class="nav-icon">▦</span>
+          <span>Inventory Intelligence</span>
+        </div>
+
+        <div class="sb-section-label">STRATEGY & PLANNING</div>
+        <div class="nav-item" data-section="budget">
+          <span class="nav-icon">⚖</span>
+          <span>Budget Allocation</span>
+        </div>
+        <div class="nav-item" data-section="destination">
+          <span class="nav-icon">◎</span>
+          <span>Destination Intelligence</span>
+        </div>
+        <div class="nav-item" data-section="supplier">
+          <span class="nav-icon">🤝</span>
+          <span>Supplier Intelligence</span>
+        </div>
+
+        <div class="sb-section-label">SIMULATION & AUDIT</div>
+        <div class="nav-item" data-section="scenario">
+          <span class="nav-icon">⟐</span>
+          <span>Scenario Lab</span>
+          <span class="nav-badge info">WHAT-IF</span>
+        </div>
+        <div class="nav-item" data-section="risk">
+          <span class="nav-icon">⚑</span>
+          <span>Risk & Anomaly</span>
+          <span class="nav-badge crit" id="sbRiskBadge">ALERTS</span>
+        </div>
+        <div class="nav-item" data-section="performance">
+          <span class="nav-icon">⟁</span>
+          <span>Performance & Outcomes</span>
+        </div>
+        <div class="nav-item" data-section="report">
+          <span class="nav-icon">📋</span>
+          <span>Executive Report</span>
+          <span class="nav-badge ok">PDF</span>
+        </div>
+
+        <div class="sb-section-label">AI DOCUMENTS & AUTOMATION</div>
+        <div class="nav-item" data-section="report-studio">
+          <span class="nav-icon">📑</span>
+          <span>AI Report Studio</span>
+          <span class="nav-badge live">STUDIO</span>
+        </div>
+        <div class="nav-item" data-section="documents">
+          <span class="nav-icon">📂</span>
+          <span>Document Library</span>
+          <span class="nav-badge ok">5 FORMATS</span>
+        </div>
+        <div class="nav-item" data-section="automations">
+          <span class="nav-icon">⚡</span>
+          <span>Automation Center</span>
+          <span class="nav-badge info">CRON</span>
+        </div>
+
+        <div class="sb-section-label">SYSTEM & AI CONFIG</div>
+        <div class="nav-item" data-section="settings">
+          <span class="nav-icon">⚙</span>
+          <span>System Settings</span>
+          <span class="nav-badge info">AI DIAG</span>
+        </div>
+      </nav>
+
+      <div class="sb-footer">
+        <div class="sb-status-box">
+          <div class="pulse-dot"></div>
+          <span>GROQ AI & SOLVER ONLINE</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN PANE -->
+    <main class="main">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="tb-breadcrumb">
+          <span>AXIOM</span>
+          <span class="sep">›</span>
+          <span class="current" id="tbSectionTitle">Executive Intelligence · Command Center</span>
+        </div>
+
+        <!-- Global Interactive Filters -->
+        <div class="tb-filters">
+          <select id="tbFilterDest" class="tb-select" title="Global Destination Filter"></select>
+          <select id="tbFilterSupplier" class="tb-select" title="Global Supplier Filter"></select>
+          <select id="tbFilterHorizon" class="tb-select" title="Planning Horizon">
+            <option value="7">Horizon: 7 Days</option>
+            <option value="14">Horizon: 14 Days</option>
+            <option value="30" selected>Horizon: 30 Days (Recommended)</option>
+            <option value="60">Horizon: 60 Days</option>
+            <option value="90">Horizon: 90 Days</option>
+          </select>
+        </div>
+
+        <div class="tb-time" id="tbTime">--:--:-- UTC</div>
+
+        <div class="alert-pill" onclick="AxiomNavigation.switchSection('risk')">
+          <div class="alert-dot"></div>
+          <span id="tbAlertCount">3 CRITICAL</span>
+        </div>
+
+        <button class="tb-btn" onclick="AxiomNavigation.switchSection('copilot')" style="background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(0,96,255,0.25));border-color:var(--cyan-border);">
+          ✦ ASK COPILOT
+        </button>
+
+        <button class="tb-btn btn-outline" onclick="AxiomExport.exportRecommendationsCSV(AxiomApp.getState().optimizationResults.decisions)" title="Export Procurement Decisions to CSV">
+          ⬇ CSV
+        </button>
+
+        <button class="tb-btn btn-outline" onclick="AxiomNavigation.switchSection('report-studio')" style="border-color:var(--cyan-border);color:var(--cyan);" title="AI Report Generation Studio">
+          📑 STUDIO
+        </button>
+
+        <button class="tb-btn btn-outline tb-notif-btn" onclick="AxiomNotification.toggleDrawer()" title="Operational Alerts & Notifications" style="position:relative;padding:6px 10px;">
+          <span>🔔</span>
+          <span class="tb-notif-badge" id="tbNotifBadge" style="display:none;">0</span>
+        </button>
+      </header>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 1: EXECUTIVE INTELLIGENCE            -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area active" id="sec-overview">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Executive <span class="sec-title-accent">Intelligence Command</span></h1>
+            <div class="sec-sub">Multi-Factor Travel Procurement Decisions · Real-time Operational Optimization</div>
+          </div>
+          <div class="sec-badge">DECISION-SUPPORT SYSTEM ACTIVE</div>
+        </div>
+
+        <!-- Primary KPI Grid -->
+        <div class="kpi-grid" id="overviewKpis"></div>
+
+        <!-- Main Grid: Demand vs Inventory + AI Decision Brief -->
+        <div class="grid-main">
+          <!-- Demand vs Inventory Exposure -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">▦</span> Demand Forecast vs Available Inventory</div>
+              <div class="card-actions">
+                <span class="chip live">OPTIMIZED</span>
+                <span class="chip info">12 MARKETS</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-tall">
+                <canvas id="chartDemandVsStock"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Decision Brief (Prioritized Insights) -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">✦</span> AI Decision Brief</div>
+              <span class="chip warn">HIGH CONVICTION</span>
+            </div>
+            <div class="card-body" style="overflow-y:auto;max-height:360px;">
+              <div class="ai-brief-list" id="aiBriefList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Charts Row -->
+        <div class="grid-2">
+          <!-- Booking Pace Acceleration -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">⟁</span> Booking Velocity vs Historical Benchmark</div>
+              <span class="chip live">LIVE PACE PICKUP</span>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap">
+                <canvas id="chartBookingPace"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Destination Demand Ranking -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">◎</span> Destination Demand Volume Ranking</div>
+              <span class="chip info">MONTHLY ROOM-NIGHTS</span>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap">
+                <canvas id="chartDestRanking"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 2: AI COPILOT                        -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-copilot">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">AXIOM <span class="sec-title-accent">AI Procurement Copilot</span></h1>
+            <div class="sec-sub">Data-Grounded Decision Intelligence · Context-Aware Conversations · Zero Calculations Hallucinated</div>
+          </div>
+          <div class="ai-provider-badge">GROQ · openai/gpt-oss-120b</div>
+        </div>
+
+        <div class="copilot-container">
+          <!-- Chat Thread -->
+          <div class="chat-thread" id="copilotMessages"></div>
+
+          <!-- Quick Suggestion Pills -->
+          <div class="prompt-pills-wrap">
+            <div class="prompt-pill" onclick="AxiomCopilot.askQuickPrompt('Which destinations should we prioritize for procurement and why?')">
+              📍 Top Destination Priorities
+            </div>
+            <div class="prompt-pill" onclick="AxiomCopilot.askQuickPrompt('Which hotel properties are currently under-provisioned with stockout risk?')">
+              ⚠ Under-Provisioned Hotels
+            </div>
+            <div class="prompt-pill" onclick="AxiomCopilot.askQuickPrompt('Which wholesaler bedbank delivers the best commercial value vs fulfillment SLA?')">
+              🤝 Wholesaler Value Audit
+            </div>
+            <div class="prompt-pill" onclick="AxiomCopilot.askQuickPrompt('How should we allocate our $1.5M procurement budget to maximize net profit margin?')">
+              ⚖ Optimal Budget Allocation
+            </div>
+            <div class="prompt-pill" onclick="AxiomCopilot.askQuickPrompt('What happens if global travel demand decreases by 20%? What is the financial impact?')">
+              📉 Simulate 20% Demand Drop
+            </div>
+            <div class="prompt-pill" onclick="AxiomCopilot.askQuickPrompt('Summarize this month inventory performance and capital efficiency.')">
+              📋 Executive Portfolio Summary
+            </div>
+          </div>
+
+          <!-- Input Bar -->
+          <div class="chat-input-wrap">
+            <input type="text" class="chat-input" id="copilotInput" placeholder="Ask AXIOM Copilot about travel inventory, pricing, supplier rates, demand forecasts..." onkeydown="if(event.key==='Enter') AxiomCopilot.sendMessage('copilotInput', 'copilotMessages')">
+            <button class="btn btn-primary" onclick="AxiomCopilot.sendMessage('copilotInput', 'copilotMessages')">
+              SEND ✦
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 3: DEMAND FORECASTING ENGINE         -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-forecasting">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Demand <span class="sec-title-accent">Forecasting Engine</span></h1>
+            <div class="sec-sub">Holt-Winters Exponential Smoothing · Booking Pickup Model · 95% Confidence Bounds</div>
+          </div>
+          <div class="sec-badge">MODEL HIERARCHY TIER 3</div>
+        </div>
+
+        <div class="kpi-grid" id="forecastSummaryBar"></div>
+
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon">📈</span> Predictive Demand Trajectory & Confidence Corridor</div>
+            <div class="card-actions">
+              <span class="chip live">CONFIDENCE 95%</span>
+              <span class="chip warn">CAPACITY OVERLAY</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap chart-tall">
+              <canvas id="chartForecastMain"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">✦</span> Demand Driver Diagnosis (Why Demand is Changing)</div>
+              <span class="chip info">EXPLAINABILITY</span>
+            </div>
+            <div class="card-body" id="forecastExplanationText"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">⟁</span> Historical Model Validation Error</div>
+              <span class="chip live">BACKTEST WINDOW</span>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap">
+                <canvas id="chartForecastAccuracy"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 4: INVENTORY INTELLIGENCE            -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-inventory">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Inventory <span class="sec-title-accent">Intelligence System</span></h1>
+            <div class="sec-sub">36 Active Wholesale Allotments · Room Block Aging · Sell-Through Velocity</div>
+          </div>
+          <div class="sec-badge">REAL-TIME INVENTORY REGISTRY</div>
+        </div>
+
+        <div class="grid-main" style="margin-bottom:1rem;">
+          <div class="table-wrap" style="max-height:480px;overflow-y:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Contract ID</th>
+                  <th>Property & Destination</th>
+                  <th>Wholesaler</th>
+                  <th>Lead Time</th>
+                  <th>Purchased</th>
+                  <th>Booked</th>
+                  <th>Remaining</th>
+                  <th>Sell-Through</th>
+                  <th>Cost / ADR</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">▦ Room Category Distribution</div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap">
+                <canvas id="chartInvCategory"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 5: PROCUREMENT OPTIMIZER (CORE)      -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-optimizer">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Procurement <span class="sec-title-accent">Optimizer & Decision Engine</span></h1>
+            <div class="sec-sub">Constrained Knapsack Solver · Marginal Contribution Optimization · Defensible Actions</div>
+          </div>
+          <button class="btn btn-primary" onclick="AxiomExport.exportRecommendationsCSV(AxiomApp.getState().optimizationResults.decisions)">
+            ⬇ EXPORT DECISION TABLE (CSV)
+          </button>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;background:rgba(0,229,255,0.03);border-color:var(--cyan-border);">
+          <div class="card-body" style="padding:0.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--text3);">
+              <strong>MATHEMATICAL OBJECTIVE:</strong> Maximize Expected Revenue − Procurement Cost − Unsold Inventory Penalty − Demand Shortage Penalty − Supplier Risk
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--cyan);">
+              CONSTRAINTS: Budget Ceiling ($1.5M) · Destination Caps (22%) · Supplier Capacities
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-grid" id="optimizerSummaryBar"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-icon">⚡</span> Recommended Travel Inventory Procurement Actions
+            </div>
+            <span class="chip info">CLICK ROW FOR MATHEMATICAL TRACE</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrap" style="max-height:550px;overflow-y:auto;border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('action')" title="Sort by Action">Action <span id="sort_opt_action"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('destinationName')" title="Sort by Destination">Destination & Hotel <span id="sort_opt_destinationName"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('supplierName')" title="Sort by Supplier">Room & Supplier <span id="sort_opt_supplierName"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('unitCost')" title="Sort by Cost">Cost / ADR <span id="sort_opt_unitCost"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('forecastDemand')" title="Sort by Demand">Demand <span id="sort_opt_forecastDemand"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('currentInventory')" title="Sort by Current Inventory">Current Stock <span id="sort_opt_currentInventory"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('recommendedPurchaseQty')" title="Sort by Purchase Qty">Procure Qty <span id="sort_opt_recommendedPurchaseQty"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('allocatedBudgetUSD')" title="Sort by Allocated Budget">Budget <span id="sort_opt_allocatedBudgetUSD"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('coveragePctAfter')" title="Sort by Coverage">Coverage <span id="sort_opt_coveragePctAfter"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('expectedProfitUSD')" title="Sort by Profit">Expected Profit <span id="sort_opt_expectedProfitUSD"></span></th>
+                    <th style="cursor:pointer;user-select:none;" onclick="AxiomApp.sortOptimizerTable('riskScore')" title="Sort by Risk">Risk <span id="sort_opt_riskScore"></span></th>
+                    <th>Trace</th>
+                  </tr>
+                </thead>
+                <tbody id="optimizerTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 6: DYNAMIC BUDGET ALLOCATION         -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-budget">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Dynamic <span class="sec-title-accent">Budget Planning & Allocation</span></h1>
+            <div class="sec-sub">Interactive Capital Allocation · Marginal Yield Optimizer · Real-Time Sensitivity</div>
+          </div>
+          <div class="sec-badge">DYNAMIC SOLVER</div>
+        </div>
+
+        <div class="grid-main" style="margin-bottom:1rem;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚖ Budget Allocation Controls</div>
+              <span class="chip live">REACTIVE</span>
+            </div>
+            <div class="card-body">
+              <div class="control-panel">
+                <div class="control-group">
+                  <div class="control-header">
+                    <span class="control-label">Total Procurement Budget</span>
+                    <span class="control-value" id="budgetSliderVal">$1,500,000</span>
+                  </div>
+                  <input type="range" class="slider" id="budgetSlider" min="500000" max="4000000" step="50000" value="1500000" oninput="AxiomApp.onBudgetSliderInput(this.value)">
+                </div>
+
+                <div class="control-group" style="margin-top:0.5rem;">
+                  <span class="control-label">Risk Tolerance Policy</span>
+                  <div style="display:flex;gap:8px;margin-top:4px;">
+                    <button class="tb-btn" style="flex:1;" onclick="AxiomNavigation.setState({riskTolerance:'conservative'}); AxiomApp.onFilterChange();">Conservative</button>
+                    <button class="tb-btn" style="flex:1;" onclick="AxiomNavigation.setState({riskTolerance:'balanced'}); AxiomApp.onFilterChange();">Balanced</button>
+                    <button class="tb-btn" style="flex:1;" onclick="AxiomNavigation.setState({riskTolerance:'aggressive'}); AxiomApp.onFilterChange();">Aggressive</button>
+                  </div>
+                </div>
+
+                <div style="font-size:0.75rem;color:var(--text3);line-height:1.5;margin-top:0.5rem;">
+                  Adjusting the budget dynamically re-runs the multi-factor optimization solver, shifting allocations toward destinations with highest marginal profit return per dollar invested while maintaining diversification caps.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">▦ Budget Distribution by Destination</div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap">
+                <canvas id="chartBudgetAlloc"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">◎ Destination Allocation Matrix</div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrap" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Destination</th>
+                    <th>Allocated Budget</th>
+                    <th>Portfolio Share</th>
+                    <th>Units Procured</th>
+                    <th>Projected Revenue</th>
+                    <th>Net Profit Contribution</th>
+                  </tr>
+                </thead>
+                <tbody id="budgetMatrixBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 7: DESTINATION INTELLIGENCE          -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-destination">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Destination <span class="sec-title-accent">Intelligence & Momentum</span></h1>
+            <div class="sec-sub">12 Key Travel Markets · Booking Momentum Scores · Seasonal Spread Analysis</div>
+          </div>
+          <button class="btn btn-outline" onclick="AxiomDrawerModal.openDestinationComparisonModal('dest-tyo', 'dest-par')">
+            ◎ COMPARE DESTINATIONS HEAD-TO-HEAD
+          </button>
+        </div>
+
+        <div class="grid-3" id="destCardsWrap"></div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 8: SUPPLIER INTELLIGENCE             -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-supplier">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Supplier <span class="sec-title-accent">Intelligence & Wholesaler Scorecard</span></h1>
+            <div class="sec-sub">Bedbank Evaluation · Fulfillment Reliability · Price Competitiveness · Stop-Sale SLAs</div>
+          </div>
+          <div class="sec-badge">6 GLOBAL CONSOLIDATORS</div>
+        </div>
+
+        <div class="grid-main" style="margin-bottom:1rem;">
+          <div class="grid-2" id="supplierCardsWrap"></div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⟁ Wholesaler Performance Radar</div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrap chart-tall">
+                <canvas id="chartSupplierRadar"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 9: SCENARIO LAB (WHAT-IF)            -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-scenario">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Scenario <span class="sec-title-accent">Lab & What-If Stress Testing</span></h1>
+            <div class="sec-sub">Simulate Demand Surges, Wholesaler Shocks, Recessionary Pullbacks & Currency Events</div>
+          </div>
+          <button class="btn btn-primary" onclick="AxiomExport.exportScenarioCSV(AxiomApp.getState().scenarioResults)">
+            ⬇ EXPORT SCENARIO DELTAS (CSV)
+          </button>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="card-header">
+            <div class="card-title">✦ Preset Stress Scenarios</div>
+            <span class="chip info">1-CLICK EXECUTION</span>
+          </div>
+          <div class="card-body" style="display:flex;gap:8px;flex-wrap:wrap;" id="scenarioPresetButtons"></div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;background:rgba(18,28,54,0.7);border-color:var(--cyan-border);">
+          <div class="card-body" id="scenarioNarrative"></div>
+        </div>
+
+        <div class="kpi-grid" id="scenarioDeltaCards"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⟁ Baseline vs Scenario Financial Comparison</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap chart-tall">
+              <canvas id="chartScenarioComparison"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 10: RISK & ANOMALY DETECTION         -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-risk">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Risk & <span class="sec-title-accent">Anomaly Intelligence Center</span></h1>
+            <div class="sec-sub">Autonomous Risk Detection · Prioritized strictly by Financial Exposure ($ at Risk)</div>
+          </div>
+          <div class="sec-badge">FINANCIAL RISK SCANNER</div>
+        </div>
+
+        <div class="ai-brief-list" id="riskAlertsList"></div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 11: PERFORMANCE & OUTCOMES           -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-performance">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">Performance <span class="sec-title-accent">& Outcome Tracking</span></h1>
+            <div class="sec-sub">Forecast vs Actual Demand · Procurement Efficiency · Simulated Historical Benchmark</div>
+          </div>
+          <div class="sec-badge">MODEL AUDIT</div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="card-header">
+            <div class="card-title">📈 Model Forecast vs Observed Actual Demand (Past 6 Months)</div>
+            <span class="chip info">HISTORICAL VALIDATION</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap chart-tall">
+              <canvas id="chartPerfValidation"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-grid" id="perfKpiGrid">
+          <div class="kpi-card">
+            <div class="kpi-label">Sell-Through Rate</div>
+            <div class="kpi-value green">94.8%</div>
+            <div class="kpi-sub">Industry Benchmark: 88.2%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Unsold Inventory Loss</div>
+            <div class="kpi-value green">3.2%</div>
+            <div class="kpi-sub">Industry Benchmark: 7.4%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Stockout Shortage Rate</div>
+            <div class="kpi-value cyan">2.8%</div>
+            <div class="kpi-sub">Reduced from 9.1%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Procurement Capital ROI</div>
+            <div class="kpi-value green">$1.84</div>
+            <div class="kpi-sub">Per $1 wholesale committed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 12: EXECUTIVE REPORT                 -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-report">
+        <div id="executiveReportContainer"></div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 13: SYSTEM SETTINGS                  -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-settings">
+        <div class="sec-header">
+          <div class="sec-title-wrap">
+            <h1 class="sec-title">System <span class="sec-title-accent">Settings & AI Diagnostics</span></h1>
+            <div class="sec-sub">LLM Provider Orchestration · Real-Time Connectivity Testing · Security Posture Verification</div>
+          </div>
+          <div class="sec-badge">ENTERPRISE SECURITY</div>
+        </div>
+
+        <div id="settingsContainer"></div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 14: AI REPORT STUDIO                 -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-report-studio">
+        <div id="reportStudioContainer"></div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 15: DOCUMENT LIBRARY                 -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-documents">
+        <div id="documentLibraryContainer"></div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- MODULE 16: AUTOMATION CENTER                -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="content-area" id="sec-automations">
+        <div id="automationContainer"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FLOATING COPILOT LAUNCHER & DOCK -->
+  <div class="floating-copilot-btn" id="floatingCopilotBtn" onclick="AxiomCopilot.toggleFloatingCopilot()">
+    <span>✦</span>
+    <span>AXIOM COPILOT</span>
+  </div>
+
+  <div class="floating-copilot-drawer" id="floatingCopilotDrawer">
+    <div class="copilot-header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="color:var(--cyan);font-weight:bold;">✦</span>
+        <span style="font-family:var(--syne);font-weight:700;font-size:0.85rem;color:var(--text);">AXIOM AI Copilot</span>
+      </div>
+      <button class="drawer-close" onclick="AxiomCopilot.toggleFloatingCopilot()">&times;</button>
+    </div>
+    <div class="chat-thread" id="floatingCopilotMessages" style="height:440px;"></div>
+    <div class="chat-input-wrap">
+      <input type="text" class="chat-input" id="floatingCopilotInput" placeholder="Ask about inventory, rates, forecasts..." onkeydown="if(event.key==='Enter') AxiomCopilot.sendMessage('floatingCopilotInput', 'floatingCopilotMessages')">
+      <button class="btn btn-primary" onclick="AxiomCopilot.sendMessage('floatingCopilotInput', 'floatingCopilotMessages')">
+        ✦
+      </button>
+    </div>
+  </div>
+
+  <!-- EXPLAINABILITY DRAWER -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="explainDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title" id="drawerTitle">Recommendation Rationale</div>
+      <button class="drawer-close" onclick="AxiomDrawerModal.closeDrawer()">&times;</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+
+  <!-- MODAL DIALOG CONTAINER -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-box" id="modalBox"></div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toastWrap"></div>
+
+  <!-- JAVASCRIPT ARCHITECTURE -->
+  <script src="js/vendor/sanitizer.js"></script>
+  <script src="js/data/syntheticDataset.js"></script>
+  <script src="js/engine/forecastingEngine.js"></script>
+  <script src="js/engine/optimizationEngine.js"></script>
+  <script src="js/engine/riskEngine.js"></script>
+  <script src="js/engine/scenarioEngine.js"></script>
+  <script src="js/engine/explanationEngine.js"></script>
+  <script src="js/ui/navigation.js"></script>
+  <script src="js/ui/charts.js"></script>
+  <script src="js/ui/drawerModal.js"></script>
+  <script src="js/ui/copilotView.js"></script>
+  <script src="js/ui/settingsView.js"></script>
+  <script src="js/ui/reportStudioView.js"></script>
+  <script src="js/ui/documentLibraryView.js"></script>
+  <script src="js/ui/automationView.js"></script>
+  <script src="js/ui/notificationView.js"></script>
+  <script src="js/ui/exportUtils.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

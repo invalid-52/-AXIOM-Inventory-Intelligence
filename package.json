@@ -1,0 +1,33 @@
+{
+  "name": "axiom-inventory-intelligence",
+  "version": "2.0.0",
+  "description": "AI-Powered Travel Demand Forecasting & Procurement Optimization Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test/full-system-test.js",
+    "test:backend": "node test/backend-test.js"
+  },
+  "keywords": [
+    "travel-procurement",
+    "demand-forecasting",
+    "inventory-optimization",
+    "ai-copilot",
+    "supply-chain",
+    "decision-intelligence"
+  ],
+  "author": "AXIOM Product Engineering Team",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "docx": "^9.16.0",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "node-cron": "^4.6.0",
+    "pdfkit": "^0.20.2",
+    "pptxgenjs": "^4.0.1",
+    "uuid": "^14.0.3"
+  }
+}

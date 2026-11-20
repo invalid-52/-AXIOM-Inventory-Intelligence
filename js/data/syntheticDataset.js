@@ -1,0 +1,1321 @@
+/**
+ * AXIOM INVENTORY INTELLIGENCE
+ * Travel Inventory Dataset (Demonstration data — synthetic, not live TBO data)
+ * 
+ * Contains realistic enterprise travel inventory specifications across:
+ * - 12 Global Destinations
+ * - 6 Global Travel Bedbanks / Wholesalers
+ * - 36 Property & Room Inventory Blocks
+ * - 90-day Historical Daily Booking & Search Time Series
+ * - Financial Parameters (Costs, Selling Prices, Capacities, Lead Times)
+ */
+
+(function(root) {
+  'use strict';
+  const window = root;
+
+  // --- 1. GLOBAL DESTINATIONS ---
+  const DESTINATIONS = [
+    {
+      id: 'dest-tyo',
+      name: 'Tokyo',
+      country: 'Japan',
+      region: 'APAC',
+      iata: 'TYO',
+      coordinates: [139.6917, 35.6895],
+      marketType: 'High-Demand Metropolitan / Leisure & Business',
+      baselineMonthlyDemand: 4200, // room-nights
+      peakSeason: 'Spring (Mar-May) & Autumn (Oct-Nov)',
+      currentSeasonalityIdx: 1.35, // Sakura season momentum
+      historicalPaceBase: 140, // bookings/day benchmark
+      currentPace: 182, // +30% acceleration
+      searchIndex: 148, // indexed to 100
+      avgDailyRate: 340, // USD
+      avgProcurementCost: 235,
+      cancellationRate: 0.065,
+      marketRiskScore: 24, // low risk
+      momentumScore: 92
+    },
+    {
+      id: 'dest-par',
+      name: 'Paris',
+      country: 'France',
+      region: 'Europe',
+      iata: 'PAR',
+      coordinates: [2.3522, 48.8566],
+      marketType: 'Evergreen Cultural & High-Summer Leisure',
+      baselineMonthlyDemand: 3850,
+      peakSeason: 'Summer (Jun-Aug) & Fashion Weeks',
+      currentSeasonalityIdx: 1.22,
+      historicalPaceBase: 125,
+      currentPace: 142,
+      searchIndex: 132,
+      avgDailyRate: 310,
+      avgProcurementCost: 215,
+      cancellationRate: 0.082,
+      marketRiskScore: 32,
+      momentumScore: 86
+    },
+    {
+      id: 'dest-dxb',
+      name: 'Dubai',
+      country: 'UAE',
+      region: 'Middle East',
+      iata: 'DXB',
+      coordinates: [55.2708, 25.2048],
+      marketType: 'Luxury Leisure, Shopping & MICE Hub',
+      baselineMonthlyDemand: 4800,
+      peakSeason: 'Winter / Spring (Nov-Apr)',
+      currentSeasonalityIdx: 1.28,
+      historicalPaceBase: 160,
+      currentPace: 178,
+      searchIndex: 139,
+      avgDailyRate: 295,
+      avgProcurementCost: 195,
+      cancellationRate: 0.074,
+      marketRiskScore: 28,
+      momentumScore: 88
+    },
+    {
+      id: 'dest-nyc',
+      name: 'New York',
+      country: 'USA',
+      region: 'Americas',
+      iata: 'NYC',
+      coordinates: [-74.0060, 40.7128],
+      marketType: 'Corporate Flagship & Year-Round City Tourism',
+      baselineMonthlyDemand: 4100,
+      peakSeason: 'Autumn & Festive Holidays (Sep-Dec)',
+      currentSeasonalityIdx: 1.10,
+      historicalPaceBase: 135,
+      currentPace: 130, // slight deceleration
+      searchIndex: 114,
+      avgDailyRate: 385,
+      avgProcurementCost: 280,
+      cancellationRate: 0.115,
+      marketRiskScore: 42,
+      momentumScore: 71
+    },
+    {
+      id: 'dest-cun',
+      name: 'Cancun',
+      country: 'Mexico',
+      region: 'Americas',
+      iata: 'CUN',
+      coordinates: [-86.8515, 21.1619],
+      marketType: 'All-Inclusive Coastal Resort / Group Travel',
+      baselineMonthlyDemand: 3600,
+      peakSeason: 'Winter & Spring Break (Dec-Apr)',
+      currentSeasonalityIdx: 1.30,
+      historicalPaceBase: 118,
+      currentPace: 146,
+      searchIndex: 136,
+      avgDailyRate: 275,
+      avgProcurementCost: 180,
+      cancellationRate: 0.138, // higher cancellation on resort blocks
+      marketRiskScore: 48,
+      momentumScore: 82
+    },
+    {
+      id: 'dest-lon',
+      name: 'London',
+      country: 'UK',
+      region: 'Europe',
+      iata: 'LON',
+      coordinates: [-0.1278, 51.5074],
+      marketType: 'Global Financial Hub & Heritage Tourism',
+      baselineMonthlyDemand: 3900,
+      peakSeason: 'Summer (May-Sep)',
+      currentSeasonalityIdx: 1.15,
+      historicalPaceBase: 130,
+      currentPace: 133,
+      searchIndex: 118,
+      avgDailyRate: 325,
+      avgProcurementCost: 230,
+      cancellationRate: 0.090,
+      marketRiskScore: 35,
+      momentumScore: 77
+    },
+    {
+      id: 'dest-rom',
+      name: 'Rome',
+      country: 'Italy',
+      region: 'Europe',
+      iata: 'ROM',
+      coordinates: [12.4964, 41.9028],
+      marketType: 'Boutique Leisure & Heritage Tourism',
+      baselineMonthlyDemand: 3100,
+      peakSeason: 'Spring & Autumn (Apr-Jun, Sep-Oct)',
+      currentSeasonalityIdx: 1.25,
+      historicalPaceBase: 98,
+      currentPace: 122,
+      searchIndex: 128,
+      avgDailyRate: 260,
+      avgProcurementCost: 175,
+      cancellationRate: 0.068,
+      marketRiskScore: 30,
+      momentumScore: 84
+    },
+    {
+      id: 'dest-dps',
+      name: 'Bali',
+      country: 'Indonesia',
+      region: 'APAC',
+      iata: 'DPS',
+      coordinates: [115.1889, -8.4095],
+      marketType: 'Long-Haul Wellness & Villa Vacation Market',
+      baselineMonthlyDemand: 2900,
+      peakSeason: 'Dry Season (May-Sep)',
+      currentSeasonalityIdx: 1.18,
+      historicalPaceBase: 92,
+      currentPace: 104,
+      searchIndex: 124,
+      avgDailyRate: 210,
+      avgProcurementCost: 135,
+      cancellationRate: 0.088,
+      marketRiskScore: 36,
+      momentumScore: 79
+    },
+    {
+      id: 'dest-sin',
+      name: 'Singapore',
+      country: 'Singapore',
+      region: 'APAC',
+      iata: 'SIN',
+      coordinates: [103.8198, 1.3521],
+      marketType: 'MICE, Premium Transit & Gateway Hub',
+      baselineMonthlyDemand: 3200,
+      peakSeason: 'Year-Round / F1 Grand Prix & MICE Peaks',
+      currentSeasonalityIdx: 1.08,
+      historicalPaceBase: 105,
+      currentPace: 110,
+      searchIndex: 112,
+      avgDailyRate: 315,
+      avgProcurementCost: 228,
+      cancellationRate: 0.052,
+      marketRiskScore: 22,
+      momentumScore: 76
+    },
+    {
+      id: 'dest-mle',
+      name: 'Maldives',
+      country: 'Maldives',
+      region: 'Indian Ocean',
+      iata: 'MLE',
+      coordinates: [73.5093, 4.1755],
+      marketType: 'Ultra-Luxury Overwater Island Resorts',
+      baselineMonthlyDemand: 1650,
+      peakSeason: 'Dry Monsoon (Dec-Apr)',
+      currentSeasonalityIdx: 1.40,
+      historicalPaceBase: 52,
+      currentPace: 71,
+      searchIndex: 154,
+      avgDailyRate: 880,
+      avgProcurementCost: 560,
+      cancellationRate: 0.078,
+      marketRiskScore: 40,
+      momentumScore: 91
+    },
+    {
+      id: 'dest-bcn',
+      name: 'Barcelona',
+      country: 'Spain',
+      region: 'Europe',
+      iata: 'BCN',
+      coordinates: [2.1734, 41.3851],
+      marketType: 'Mediterranean City-Break & Coastal Leisure',
+      baselineMonthlyDemand: 3300,
+      peakSeason: 'Late Spring to Early Autumn (May-Oct)',
+      currentSeasonalityIdx: 1.20,
+      historicalPaceBase: 108,
+      currentPace: 128,
+      searchIndex: 130,
+      avgDailyRate: 245,
+      avgProcurementCost: 165,
+      cancellationRate: 0.085,
+      marketRiskScore: 33,
+      momentumScore: 83
+    },
+    {
+      id: 'dest-syd',
+      name: 'Sydney',
+      country: 'Australia',
+      region: 'Oceania',
+      iata: 'SYD',
+      coordinates: [151.2093, -33.8688],
+      marketType: 'Southern Hemisphere Gateway & Harbour Hub',
+      baselineMonthlyDemand: 2500,
+      peakSeason: 'Summer (Nov-Feb)',
+      currentSeasonalityIdx: 0.95, // off-peak transition
+      historicalPaceBase: 82,
+      currentPace: 74,
+      searchIndex: 98,
+      avgDailyRate: 290,
+      avgProcurementCost: 205,
+      cancellationRate: 0.092,
+      marketRiskScore: 38,
+      momentumScore: 65
+    }
+  ];
+
+  // --- 2. GLOBAL SUPPLIERS (BEDBANKS & WHOLESALERS) ---
+  const SUPPLIERS = [
+    {
+      id: 'sup-nexus',
+      name: 'NexusBeds Global',
+      code: 'NBG-T1',
+      tier: 'Tier 1 Global Wholesaler',
+      headquarters: 'Palma / London',
+      reliabilityScore: 96,
+      fulfillmentRate: 98.4, // %
+      priceCompetitiveness: 88, // 100 is best discount
+      cancellationFlexibility: 'Flexible (48h free cancellation)',
+      cancellationWindowDays: 2,
+      leadTimeSLA: 2, // business days
+      activeContractsCount: 14,
+      creditLimitUSD: 1200000,
+      utilizedCreditUSD: 460000,
+      riskLevel: 'Low Risk',
+      riskScore: 12,
+      avgWholesaleMarginDiscount: 0.22,
+      notes: 'Market-leading fulfillment with premium hotel chains and instant confirmation API.'
+    },
+    {
+      id: 'sup-aero',
+      name: 'AeroStay Wholesale',
+      code: 'ASW-T1',
+      tier: 'Tier 1 Travel Consolidator',
+      headquarters: 'Singapore / Dubai',
+      reliabilityScore: 92,
+      fulfillmentRate: 95.8,
+      priceCompetitiveness: 94,
+      cancellationFlexibility: 'Standard (7-day window)',
+      cancellationWindowDays: 7,
+      leadTimeSLA: 3,
+      activeContractsCount: 9,
+      creditLimitUSD: 950000,
+      utilizedCreditUSD: 380000,
+      riskLevel: 'Low Risk',
+      riskScore: 18,
+      avgWholesaleMarginDiscount: 0.26,
+      notes: 'Strong competitive rates in APAC and Middle East; occasional stop-sales during holiday peaks.'
+    },
+    {
+      id: 'sup-transworld',
+      name: 'TransWorld Consolidators',
+      code: 'TWC-T2',
+      tier: 'Tier 2 Regional Broker',
+      headquarters: 'Frankfurt',
+      reliabilityScore: 84,
+      fulfillmentRate: 91.2,
+      priceCompetitiveness: 96, // very cheap wholesale
+      cancellationFlexibility: 'Strict (14-day non-refundable clause)',
+      cancellationWindowDays: 14,
+      leadTimeSLA: 5,
+      activeContractsCount: 6,
+      creditLimitUSD: 600000,
+      utilizedCreditUSD: 240000,
+      riskLevel: 'Medium Risk',
+      riskScore: 38,
+      avgWholesaleMarginDiscount: 0.30,
+      notes: 'Lowest unit procurement rates, but higher rate of delayed confirmations and strict penalty clauses.'
+    },
+    {
+      id: 'sup-horizon',
+      name: 'Horizon BedBank',
+      code: 'HBB-T1',
+      tier: 'Tier 1 Leisure Aggregator',
+      headquarters: 'Miami / Madrid',
+      reliabilityScore: 94,
+      fulfillmentRate: 97.1,
+      priceCompetitiveness: 86,
+      cancellationFlexibility: 'Highly Flexible (24h free cancellation)',
+      cancellationWindowDays: 1,
+      leadTimeSLA: 1,
+      activeContractsCount: 11,
+      creditLimitUSD: 850000,
+      utilizedCreditUSD: 310000,
+      riskLevel: 'Low Risk',
+      riskScore: 15,
+      avgWholesaleMarginDiscount: 0.20,
+      notes: 'Excellent resort and beachfront inventory; zero-friction cancellation guarantees.'
+    },
+    {
+      id: 'sup-zenith',
+      name: 'Zenith Travel Partners',
+      code: 'ZTP-T3',
+      tier: 'Tier 3 Spot Market Consolidator',
+      headquarters: 'Hong Kong',
+      reliabilityScore: 78,
+      fulfillmentRate: 88.0,
+      priceCompetitiveness: 98, // deep discount
+      cancellationFlexibility: 'Non-Refundable Spot Allotments',
+      cancellationWindowDays: 30,
+      leadTimeSLA: 7,
+      activeContractsCount: 4,
+      creditLimitUSD: 400000,
+      utilizedCreditUSD: 190000,
+      riskLevel: 'High Risk',
+      riskScore: 56,
+      avgWholesaleMarginDiscount: 0.35,
+      notes: 'High margin potential on paper, but severe financial downside if inventory fails to sell before cutoff.'
+    },
+    {
+      id: 'sup-pacific',
+      name: 'PacificGateway Vacations',
+      code: 'PGV-T2',
+      tier: 'Tier 2 Island & Long-Haul Specialist',
+      headquarters: 'Sydney / Tokyo',
+      reliabilityScore: 89,
+      fulfillmentRate: 93.6,
+      priceCompetitiveness: 90,
+      cancellationFlexibility: 'Moderate (7-day window)',
+      cancellationWindowDays: 7,
+      leadTimeSLA: 3,
+      activeContractsCount: 7,
+      creditLimitUSD: 500000,
+      utilizedCreditUSD: 185000,
+      riskLevel: 'Low-Medium Risk',
+      riskScore: 26,
+      avgWholesaleMarginDiscount: 0.24,
+      notes: 'Specialist in overwater Maldives villas, Bali private estates, and luxury Japanese Ryokan allotments.'
+    }
+  ];
+
+  // --- 3. INVENTORY PRODUCTS (36 CONTRACTS/BLOCKS) ---
+  // Realistic multi-tier room inventory across our 12 destinations
+  const INVENTORY = [
+    // --- TOKYO ---
+    {
+      id: 'INV-TYO-001',
+      destinationId: 'dest-tyo',
+      destinationName: 'Tokyo',
+      propertyName: 'Grand Hyatt Tokyo - Roppongi Hills',
+      roomType: 'Club Deluxe King',
+      category: 'Luxury 5-Star',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Next 30 Days (Sakura Peak)',
+      daysToTravel: 16,
+      purchasedQty: 240, // room-nights contracted
+      bookedQty: 218, // booked room-nights
+      remainingQty: 22,
+      unitCost: 260, // procurement cost
+      sellingPrice: 395, // current ADR
+      historicalPace: 5.6, // bookings/day
+      currentPace: 8.4, // pace accelerating
+      cancellationRate: 0.055,
+      maxSupplierCapacity: 450, // max additional units supplier can guarantee
+      supplierLeadTimeDays: 2,
+      minBatchSize: 20
+    },
+    {
+      id: 'INV-TYO-002',
+      destinationId: 'dest-tyo',
+      destinationName: 'Tokyo',
+      propertyName: 'Keio Plaza Hotel - Shinjuku',
+      roomType: 'Superior Twin City View',
+      category: 'Premium 4-Star',
+      supplierId: 'sup-aero',
+      supplierName: 'AeroStay Wholesale',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 42,
+      purchasedQty: 320,
+      bookedQty: 245,
+      remainingQty: 75,
+      unitCost: 185,
+      sellingPrice: 280,
+      historicalPace: 4.8,
+      currentPace: 6.9,
+      cancellationRate: 0.062,
+      maxSupplierCapacity: 500,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 25
+    },
+    {
+      id: 'INV-TYO-003',
+      destinationId: 'dest-tyo',
+      destinationName: 'Tokyo',
+      propertyName: 'Hoshinoya Tokyo Ryokan',
+      roomType: 'Yuri Traditional Suite',
+      category: 'Ultra-Luxury Boutique',
+      supplierId: 'sup-pacific',
+      supplierName: 'PacificGateway Vacations',
+      travelPeriod: 'Next 30 Days (Sakura Peak)',
+      daysToTravel: 21,
+      purchasedQty: 90,
+      bookedQty: 84,
+      remainingQty: 6, // stockout imminent!
+      unitCost: 520,
+      sellingPrice: 840,
+      historicalPace: 2.1,
+      currentPace: 3.4,
+      cancellationRate: 0.040,
+      maxSupplierCapacity: 140,
+      supplierLeadTimeDays: 4,
+      minBatchSize: 10
+    },
+
+    // --- PARIS ---
+    {
+      id: 'INV-PAR-001',
+      destinationId: 'dest-par',
+      destinationName: 'Paris',
+      propertyName: 'Le Bristol Paris - Faubourg Saint-Honoré',
+      roomType: 'Deluxe Courtyard King',
+      category: 'Luxury 5-Star',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 19,
+      purchasedQty: 180,
+      bookedQty: 154,
+      remainingQty: 26,
+      unitCost: 440,
+      sellingPrice: 650,
+      historicalPace: 4.2,
+      currentPace: 5.8,
+      cancellationRate: 0.070,
+      maxSupplierCapacity: 300,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 15
+    },
+    {
+      id: 'INV-PAR-002',
+      destinationId: 'dest-par',
+      destinationName: 'Paris',
+      propertyName: 'Pullman Paris Tour Eiffel',
+      roomType: 'Superior Queen Eiffel View',
+      category: 'Premium 4-Star',
+      supplierId: 'sup-transworld',
+      supplierName: 'TransWorld Consolidators',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 48,
+      purchasedQty: 300,
+      bookedQty: 210,
+      remainingQty: 90,
+      unitCost: 210,
+      sellingPrice: 320,
+      historicalPace: 4.5,
+      currentPace: 5.2,
+      cancellationRate: 0.088,
+      maxSupplierCapacity: 450,
+      supplierLeadTimeDays: 4,
+      minBatchSize: 30
+    },
+    {
+      id: 'INV-PAR-003',
+      destinationId: 'dest-par',
+      destinationName: 'Paris',
+      propertyName: 'CitizenM Paris Opera',
+      roomType: 'King Smart Room',
+      category: 'Lifestyle Boutique',
+      supplierId: 'sup-horizon',
+      supplierName: 'Horizon BedBank',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 14,
+      purchasedQty: 220,
+      bookedQty: 198,
+      remainingQty: 22,
+      unitCost: 145,
+      sellingPrice: 225,
+      historicalPace: 5.0,
+      currentPace: 6.5,
+      cancellationRate: 0.075,
+      maxSupplierCapacity: 350,
+      supplierLeadTimeDays: 1,
+      minBatchSize: 20
+    },
+
+    // --- DUBAI ---
+    {
+      id: 'INV-DXB-001',
+      destinationId: 'dest-dxb',
+      destinationName: 'Dubai',
+      propertyName: 'Atlantis The Royal - Palm Jumeirah',
+      roomType: 'Seascape Royal King',
+      category: 'Luxury 5-Star',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 24,
+      purchasedQty: 260,
+      bookedQty: 232,
+      remainingQty: 28,
+      unitCost: 380,
+      sellingPrice: 580,
+      historicalPace: 6.0,
+      currentPace: 7.9,
+      cancellationRate: 0.068,
+      maxSupplierCapacity: 400,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 20
+    },
+    {
+      id: 'INV-DXB-002',
+      destinationId: 'dest-dxb',
+      destinationName: 'Dubai',
+      propertyName: 'JW Marriott Marquis Dubai',
+      roomType: 'Executive Business Suite',
+      category: 'Premium 4-Star',
+      supplierId: 'sup-aero',
+      supplierName: 'AeroStay Wholesale',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 38,
+      purchasedQty: 380,
+      bookedQty: 285,
+      remainingQty: 95,
+      unitCost: 175,
+      sellingPrice: 270,
+      historicalPace: 6.8,
+      currentPace: 7.4,
+      cancellationRate: 0.072,
+      maxSupplierCapacity: 600,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 30
+    },
+    {
+      id: 'INV-DXB-003',
+      destinationId: 'dest-dxb',
+      destinationName: 'Dubai',
+      propertyName: 'Rove Downtown Dubai',
+      roomType: 'Rover Burj View Room',
+      category: 'Modern Urban',
+      supplierId: 'sup-zenith',
+      supplierName: 'Zenith Travel Partners',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 45,
+      purchasedQty: 280,
+      bookedQty: 180,
+      remainingQty: 100, // slower pickup with non-refundable risk
+      unitCost: 110,
+      sellingPrice: 165,
+      historicalPace: 4.4,
+      currentPace: 3.8,
+      cancellationRate: 0.082,
+      maxSupplierCapacity: 400,
+      supplierLeadTimeDays: 5,
+      minBatchSize: 40
+    },
+
+    // --- NEW YORK ---
+    {
+      id: 'INV-NYC-001',
+      destinationId: 'dest-nyc',
+      destinationName: 'New York',
+      propertyName: 'The Plaza Hotel - Fifth Avenue',
+      roomType: 'Edwardian King Suite',
+      category: 'Luxury 5-Star',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 18,
+      purchasedQty: 170,
+      bookedQty: 132,
+      remainingQty: 38,
+      unitCost: 490,
+      sellingPrice: 680,
+      historicalPace: 3.8,
+      currentPace: 3.5, // pace lag
+      cancellationRate: 0.120,
+      maxSupplierCapacity: 250,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 15
+    },
+    {
+      id: 'INV-NYC-002',
+      destinationId: 'dest-nyc',
+      destinationName: 'New York',
+      propertyName: 'Arlo Midtown Manhattan',
+      roomType: 'Urban King City View',
+      category: 'Lifestyle Boutique',
+      supplierId: 'sup-horizon',
+      supplierName: 'Horizon BedBank',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 52,
+      purchasedQty: 310,
+      bookedQty: 220,
+      remainingQty: 90,
+      unitCost: 225,
+      sellingPrice: 320,
+      historicalPace: 4.8,
+      currentPace: 4.6,
+      cancellationRate: 0.110,
+      maxSupplierCapacity: 450,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 25
+    },
+    {
+      id: 'INV-NYC-003',
+      destinationId: 'dest-nyc',
+      destinationName: 'New York',
+      propertyName: 'New York Marriott Marquis',
+      roomType: 'Times Square Double',
+      category: 'Premium 4-Star',
+      supplierId: 'sup-transworld',
+      supplierName: 'TransWorld Consolidators',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 25,
+      purchasedQty: 250,
+      bookedQty: 175,
+      remainingQty: 75,
+      unitCost: 265,
+      sellingPrice: 360,
+      historicalPace: 4.6,
+      currentPace: 4.0,
+      cancellationRate: 0.125,
+      maxSupplierCapacity: 350,
+      supplierLeadTimeDays: 4,
+      minBatchSize: 25
+    },
+
+    // --- CANCUN ---
+    {
+      id: 'INV-CUN-001',
+      destinationId: 'dest-cun',
+      destinationName: 'Cancun',
+      propertyName: 'Hyatt Ziva Cancun - Punta Cancun',
+      roomType: 'Ocean Front Master Suite',
+      category: 'Resort All-Inclusive',
+      supplierId: 'sup-horizon',
+      supplierName: 'Horizon BedBank',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 22,
+      purchasedQty: 280,
+      bookedQty: 252,
+      remainingQty: 28,
+      unitCost: 290,
+      sellingPrice: 440,
+      historicalPace: 5.4,
+      currentPace: 7.2,
+      cancellationRate: 0.125,
+      maxSupplierCapacity: 450,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 20
+    },
+    {
+      id: 'INV-CUN-002',
+      destinationId: 'dest-cun',
+      destinationName: 'Cancun',
+      propertyName: 'Moon Palace Cancun All-Inclusive',
+      roomType: 'Deluxe Resort View King',
+      category: 'Resort All-Inclusive',
+      supplierId: 'sup-aero',
+      supplierName: 'AeroStay Wholesale',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 46,
+      purchasedQty: 350,
+      bookedQty: 260,
+      remainingQty: 90,
+      unitCost: 215,
+      sellingPrice: 325,
+      historicalPace: 5.8,
+      currentPace: 6.8,
+      cancellationRate: 0.142,
+      maxSupplierCapacity: 550,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 30
+    },
+    {
+      id: 'INV-CUN-003',
+      destinationId: 'dest-cun',
+      destinationName: 'Cancun',
+      propertyName: 'Live Aqua Beach Resort Adults Only',
+      roomType: 'Aqua Club Ocean Front',
+      category: 'Luxury Adults-Only',
+      supplierId: 'sup-zenith',
+      supplierName: 'Zenith Travel Partners',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 17,
+      purchasedQty: 160,
+      bookedQty: 105,
+      remainingQty: 55, // overprovisioned risk
+      unitCost: 240,
+      sellingPrice: 350,
+      historicalPace: 3.5,
+      currentPace: 2.8,
+      cancellationRate: 0.160,
+      maxSupplierCapacity: 250,
+      supplierLeadTimeDays: 6,
+      minBatchSize: 20
+    },
+
+    // --- LONDON ---
+    {
+      id: 'INV-LON-001',
+      destinationId: 'dest-lon',
+      destinationName: 'London',
+      propertyName: 'The Savoy - Strand',
+      roomType: 'Luxury King River View',
+      category: 'Luxury 5-Star',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 26,
+      purchasedQty: 190,
+      bookedQty: 164,
+      remainingQty: 26,
+      unitCost: 410,
+      sellingPrice: 590,
+      historicalPace: 4.1,
+      currentPace: 4.9,
+      cancellationRate: 0.078,
+      maxSupplierCapacity: 300,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 15
+    },
+    {
+      id: 'INV-LON-002',
+      destinationId: 'dest-lon',
+      destinationName: 'London',
+      propertyName: 'Park Plaza Westminster Bridge',
+      roomType: 'Studio King Big Ben View',
+      category: 'Premium 4-Star',
+      supplierId: 'sup-transworld',
+      supplierName: 'TransWorld Consolidators',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 49,
+      purchasedQty: 320,
+      bookedQty: 235,
+      remainingQty: 85,
+      unitCost: 220,
+      sellingPrice: 310,
+      historicalPace: 5.0,
+      currentPace: 5.3,
+      cancellationRate: 0.095,
+      maxSupplierCapacity: 450,
+      supplierLeadTimeDays: 4,
+      minBatchSize: 25
+    },
+    {
+      id: 'INV-LON-003',
+      destinationId: 'dest-lon',
+      destinationName: 'London',
+      propertyName: 'The Hoxton - Shoreditch',
+      roomType: 'Cosy Double Room',
+      category: 'Lifestyle Boutique',
+      supplierId: 'sup-horizon',
+      supplierName: 'Horizon BedBank',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 15,
+      purchasedQty: 210,
+      bookedQty: 188,
+      remainingQty: 22,
+      unitCost: 160,
+      sellingPrice: 240,
+      historicalPace: 4.4,
+      currentPace: 5.2,
+      cancellationRate: 0.082,
+      maxSupplierCapacity: 300,
+      supplierLeadTimeDays: 1,
+      minBatchSize: 20
+    },
+
+    // --- ROME ---
+    {
+      id: 'INV-ROM-001',
+      destinationId: 'dest-rom',
+      destinationName: 'Rome',
+      propertyName: 'Hotel de Russie - Piazza del Popolo',
+      roomType: 'Classic Deluxe Garden View',
+      category: 'Luxury 5-Star',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Next 30 Days (Spring Peak)',
+      daysToTravel: 20,
+      purchasedQty: 160,
+      bookedQty: 146,
+      remainingQty: 14,
+      unitCost: 360,
+      sellingPrice: 540,
+      historicalPace: 3.8,
+      currentPace: 5.4, // +42% pace
+      cancellationRate: 0.058,
+      maxSupplierCapacity: 240,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 15
+    },
+    {
+      id: 'INV-ROM-002',
+      destinationId: 'dest-rom',
+      destinationName: 'Rome',
+      propertyName: 'Starhotels Metropole',
+      roomType: 'Superior Double Central',
+      category: 'Premium 4-Star',
+      supplierId: 'sup-aero',
+      supplierName: 'AeroStay Wholesale',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 44,
+      purchasedQty: 270,
+      bookedQty: 215,
+      remainingQty: 55,
+      unitCost: 165,
+      sellingPrice: 250,
+      historicalPace: 4.2,
+      currentPace: 5.6,
+      cancellationRate: 0.065,
+      maxSupplierCapacity: 400,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 25
+    },
+    {
+      id: 'INV-ROM-003',
+      destinationId: 'dest-rom',
+      destinationName: 'Rome',
+      propertyName: 'The Chapter Roma Boutique',
+      roomType: 'Baby Suite Historic Center',
+      category: 'Boutique Design',
+      supplierId: 'sup-transworld',
+      supplierName: 'TransWorld Consolidators',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 28,
+      purchasedQty: 140,
+      bookedQty: 118,
+      remainingQty: 22,
+      unitCost: 195,
+      sellingPrice: 290,
+      historicalPace: 3.1,
+      currentPace: 4.2,
+      cancellationRate: 0.072,
+      maxSupplierCapacity: 200,
+      supplierLeadTimeDays: 4,
+      minBatchSize: 15
+    },
+
+    // --- BALI ---
+    {
+      id: 'INV-DPS-001',
+      destinationId: 'dest-dps',
+      destinationName: 'Bali',
+      propertyName: 'Four Seasons Resort Bali at Jimbaran Bay',
+      roomType: 'One-Bedroom Deluxe Pool Villa',
+      category: 'Luxury Villa',
+      supplierId: 'sup-pacific',
+      supplierName: 'PacificGateway Vacations',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 23,
+      purchasedQty: 130,
+      bookedQty: 112,
+      remainingQty: 18,
+      unitCost: 380,
+      sellingPrice: 580,
+      historicalPace: 3.2,
+      currentPace: 4.4,
+      cancellationRate: 0.075,
+      maxSupplierCapacity: 220,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 10
+    },
+    {
+      id: 'INV-DPS-002',
+      destinationId: 'dest-dps',
+      destinationName: 'Bali',
+      propertyName: 'Alila Seminyak Beachfront',
+      roomType: 'Ocean View Deluxe King',
+      category: 'Premium Resort',
+      supplierId: 'sup-aero',
+      supplierName: 'AeroStay Wholesale',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 50,
+      purchasedQty: 240,
+      bookedQty: 170,
+      remainingQty: 70,
+      unitCost: 190,
+      sellingPrice: 290,
+      historicalPace: 3.9,
+      currentPace: 4.5,
+      cancellationRate: 0.088,
+      maxSupplierCapacity: 380,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 20
+    },
+    {
+      id: 'INV-DPS-003',
+      destinationId: 'dest-dps',
+      destinationName: 'Bali',
+      propertyName: 'Padma Resort Ubud',
+      roomType: 'Premier Club Valley View',
+      category: 'Eco-Luxury Retreat',
+      supplierId: 'sup-zenith',
+      supplierName: 'Zenith Travel Partners',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 16,
+      purchasedQty: 180,
+      bookedQty: 110,
+      remainingQty: 70, // overbought
+      unitCost: 140,
+      sellingPrice: 210,
+      historicalPace: 3.2,
+      currentPace: 2.5,
+      cancellationRate: 0.105,
+      maxSupplierCapacity: 260,
+      supplierLeadTimeDays: 6,
+      minBatchSize: 25
+    },
+
+    // --- SINGAPORE ---
+    {
+      id: 'INV-SIN-001',
+      destinationId: 'dest-sin',
+      destinationName: 'Singapore',
+      propertyName: 'Marina Bay Sands',
+      roomType: 'Sands Premier Sky King',
+      category: 'Luxury Integrated Resort',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 27,
+      purchasedQty: 220,
+      bookedQty: 204,
+      remainingQty: 16,
+      unitCost: 420,
+      sellingPrice: 620,
+      historicalPace: 5.1,
+      currentPace: 6.2,
+      cancellationRate: 0.045,
+      maxSupplierCapacity: 340,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 15
+    },
+    {
+      id: 'INV-SIN-002',
+      destinationId: 'dest-sin',
+      destinationName: 'Singapore',
+      propertyName: 'The Fullerton Hotel Singapore',
+      roomType: 'Heritage Room Marina View',
+      category: 'Heritage Luxury',
+      supplierId: 'sup-aero',
+      supplierName: 'AeroStay Wholesale',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 45,
+      purchasedQty: 260,
+      bookedQty: 210,
+      remainingQty: 50,
+      unitCost: 280,
+      sellingPrice: 395,
+      historicalPace: 4.4,
+      currentPace: 4.8,
+      cancellationRate: 0.050,
+      maxSupplierCapacity: 380,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 20
+    },
+    {
+      id: 'INV-SIN-003',
+      destinationId: 'dest-sin',
+      destinationName: 'Singapore',
+      propertyName: 'Oasia Hotel Downtown - Tanjong Pagar',
+      roomType: 'Club King Urban Garden',
+      category: 'Premium Business',
+      supplierId: 'sup-horizon',
+      supplierName: 'Horizon BedBank',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 18,
+      purchasedQty: 230,
+      bookedQty: 195,
+      remainingQty: 35,
+      unitCost: 190,
+      sellingPrice: 275,
+      historicalPace: 4.2,
+      currentPace: 4.5,
+      cancellationRate: 0.055,
+      maxSupplierCapacity: 320,
+      supplierLeadTimeDays: 1,
+      minBatchSize: 20
+    },
+
+    // --- MALDIVES ---
+    {
+      id: 'INV-MLE-001',
+      destinationId: 'dest-mle',
+      destinationName: 'Maldives',
+      propertyName: 'Soneva Jani - Noonu Atoll',
+      roomType: '1-Bedroom Water Retreat with Slide',
+      category: 'Ultra-Luxury Overwater',
+      supplierId: 'sup-pacific',
+      supplierName: 'PacificGateway Vacations',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 25,
+      purchasedQty: 75,
+      bookedQty: 68,
+      remainingQty: 7, // shortage warning
+      unitCost: 1250,
+      sellingPrice: 1980,
+      historicalPace: 1.8,
+      currentPace: 2.8, // huge pace surge
+      cancellationRate: 0.060,
+      maxSupplierCapacity: 110,
+      supplierLeadTimeDays: 4,
+      minBatchSize: 5
+    },
+    {
+      id: 'INV-MLE-002',
+      destinationId: 'dest-mle',
+      destinationName: 'Maldives',
+      propertyName: 'Anantara Kihavah Maldives Villas',
+      roomType: 'Over Water Pool Villa',
+      category: 'Luxury Island Resort',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 54,
+      purchasedQty: 110,
+      bookedQty: 92,
+      remainingQty: 18,
+      unitCost: 820,
+      sellingPrice: 1320,
+      historicalPace: 2.4,
+      currentPace: 3.5,
+      cancellationRate: 0.068,
+      maxSupplierCapacity: 160,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 10
+    },
+    {
+      id: 'INV-MLE-003',
+      destinationId: 'dest-mle',
+      destinationName: 'Maldives',
+      propertyName: 'Kurumba Maldives Resort',
+      roomType: 'Deluxe Beach Bungalow',
+      category: 'Premium Beach Resort',
+      supplierId: 'sup-transworld',
+      supplierName: 'TransWorld Consolidators',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 29,
+      purchasedQty: 140,
+      bookedQty: 115,
+      remainingQty: 25,
+      unitCost: 390,
+      sellingPrice: 590,
+      historicalPace: 3.1,
+      currentPace: 4.1,
+      cancellationRate: 0.085,
+      maxSupplierCapacity: 200,
+      supplierLeadTimeDays: 5,
+      minBatchSize: 15
+    },
+
+    // --- BARCELONA ---
+    {
+      id: 'INV-BCN-001',
+      destinationId: 'dest-bcn',
+      destinationName: 'Barcelona',
+      propertyName: 'W Barcelona - Barceloneta',
+      roomType: 'Fabulous King Sea View',
+      category: 'Luxury Lifestyle',
+      supplierId: 'sup-horizon',
+      supplierName: 'Horizon BedBank',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 21,
+      purchasedQty: 190,
+      bookedQty: 172,
+      remainingQty: 18,
+      unitCost: 285,
+      sellingPrice: 420,
+      historicalPace: 4.4,
+      currentPace: 6.2, // +40% pace
+      cancellationRate: 0.076,
+      maxSupplierCapacity: 280,
+      supplierLeadTimeDays: 1,
+      minBatchSize: 15
+    },
+    {
+      id: 'INV-BCN-002',
+      destinationId: 'dest-bcn',
+      destinationName: 'Barcelona',
+      propertyName: 'Majestic Hotel & Spa Passeig de Gràcia',
+      roomType: 'Deluxe Passeig Suite',
+      category: 'Luxury Heritage',
+      supplierId: 'sup-nexus',
+      supplierName: 'NexusBeds Global',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 47,
+      purchasedQty: 240,
+      bookedQty: 182,
+      remainingQty: 58,
+      unitCost: 260,
+      sellingPrice: 380,
+      historicalPace: 4.2,
+      currentPace: 5.4,
+      cancellationRate: 0.080,
+      maxSupplierCapacity: 350,
+      supplierLeadTimeDays: 2,
+      minBatchSize: 20
+    },
+    {
+      id: 'INV-BCN-003',
+      destinationId: 'dest-bcn',
+      destinationName: 'Barcelona',
+      propertyName: 'H10 Cubik - Via Laietana',
+      roomType: 'Classic Double Terrace',
+      category: 'Premium Boutique',
+      supplierId: 'sup-transworld',
+      supplierName: 'TransWorld Consolidators',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 13,
+      purchasedQty: 220,
+      bookedQty: 192,
+      remainingQty: 28,
+      unitCost: 155,
+      sellingPrice: 235,
+      historicalPace: 4.8,
+      currentPace: 5.9,
+      cancellationRate: 0.092,
+      maxSupplierCapacity: 310,
+      supplierLeadTimeDays: 4,
+      minBatchSize: 20
+    },
+
+    // --- SYDNEY ---
+    {
+      id: 'INV-SYD-001',
+      destinationId: 'dest-syd',
+      destinationName: 'Sydney',
+      propertyName: 'Park Hyatt Sydney - The Rocks',
+      roomType: 'Opera View King Deluxe',
+      category: 'Ultra-Luxury 5-Star',
+      supplierId: 'sup-pacific',
+      supplierName: 'PacificGateway Vacations',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 24,
+      purchasedQty: 130,
+      bookedQty: 104,
+      remainingQty: 26,
+      unitCost: 460,
+      sellingPrice: 650,
+      historicalPace: 3.2,
+      currentPace: 3.0,
+      cancellationRate: 0.084,
+      maxSupplierCapacity: 200,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 10
+    },
+    {
+      id: 'INV-SYD-002',
+      destinationId: 'dest-syd',
+      destinationName: 'Sydney',
+      propertyName: 'Crown Towers Sydney - Barangaroo',
+      roomType: 'Harbour Bridge King Suite',
+      category: 'Luxury Integrated Resort',
+      supplierId: 'sup-aero',
+      supplierName: 'AeroStay Wholesale',
+      travelPeriod: 'Mid-Term (31-60 Days)',
+      daysToTravel: 53,
+      purchasedQty: 220,
+      bookedQty: 150,
+      remainingQty: 70,
+      unitCost: 320,
+      sellingPrice: 470,
+      historicalPace: 3.8,
+      currentPace: 3.4,
+      cancellationRate: 0.090,
+      maxSupplierCapacity: 320,
+      supplierLeadTimeDays: 3,
+      minBatchSize: 20
+    },
+    {
+      id: 'INV-SYD-003',
+      destinationId: 'dest-syd',
+      destinationName: 'Sydney',
+      propertyName: 'Ovolo 1888 Darling Harbour',
+      roomType: 'King Loft Heritage',
+      category: 'Boutique Lifestyle',
+      supplierId: 'sup-zenith',
+      supplierName: 'Zenith Travel Partners',
+      travelPeriod: 'Next 30 Days',
+      daysToTravel: 19,
+      purchasedQty: 160,
+      bookedQty: 98,
+      remainingQty: 62, // slow moving inventory
+      unitCost: 170,
+      sellingPrice: 245,
+      historicalPace: 3.2,
+      currentPace: 2.4, // -25% pace drop
+      cancellationRate: 0.115,
+      maxSupplierCapacity: 250,
+      supplierLeadTimeDays: 6,
+      minBatchSize: 20
+    }
+  ];
+
+  // --- 4. 90-DAY DAILY HISTORICAL TIME SERIES (PER DESTINATION) ---
+  // Deterministic, realistic historical curves showing seasonal baselines, 
+  // pickup curves, weekly cadence, and recent momentum shocks
+  function generateHistoricalSeries() {
+    const series = {};
+    const today = new Date('2026-11-20T00:00:00Z');
+
+    DESTINATIONS.forEach(dest => {
+      const days = [];
+      for (let i = 89; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dayOfWeek = d.getDay(); // 0 is Sun, 6 is Sat
+        const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6); // Fri/Sat peak
+        const dayFactor = isWeekend ? 1.28 : 0.92;
+
+        // Base trend + momentum acceleration in last 30 days
+        const progress = (90 - i) / 90; // 0 to 1
+        const momentumFactor = 1 + (dest.momentumScore - 75) / 100 * (progress * 0.4);
+
+        // Cyclic seasonality
+        const seasonalWave = Math.sin((90 - i) / 14) * 0.12;
+
+        // Daily demand actuals with deterministic variation
+        const pseudoRandom = Math.sin(dest.baselineMonthlyDemand + i * 3.7) * 0.15;
+        const baseDaily = (dest.baselineMonthlyDemand / 30);
+        const actualDemand = Math.round(baseDaily * dayFactor * momentumFactor * (1 + seasonalWave + pseudoRandom));
+
+        // Booking pickup for this day
+        const bookings = Math.round(actualDemand * (1 - dest.cancellationRate) * (0.92 + pseudoRandom * 0.5));
+        
+        // Search volume index
+        const searches = Math.round(dest.searchIndex * 12 * (1 + (progress - 0.5) * 0.25 + pseudoRandom * 0.8));
+
+        days.push({
+          date: d.toISOString().split('T')[0],
+          dayIndex: 90 - i,
+          demand: Math.max(10, actualDemand),
+          bookings: Math.max(8, bookings),
+          cancellations: Math.round(bookings * dest.cancellationRate),
+          searches: searches,
+          averagePrice: Math.round(dest.avgDailyRate * (1 + (pseudoRandom * 0.1))),
+          inventoryAvailable: Math.round(actualDemand * 1.15)
+        });
+      }
+      series[dest.id] = days;
+    });
+
+    return series;
+  }
+
+  const TIME_SERIES = generateHistoricalSeries();
+
+  // --- 5. INITIAL BUDGET & PORTFOLIO CONFIG ---
+  const DEFAULT_CONFIG = {
+    totalBudgetUSD: 1500000, // $1.5M total procurement allocation
+    minDestinationBudgetPct: 3.0, // at least 3% per active destination ($45k)
+    maxDestinationBudgetPct: 22.0, // no single destination > 22% ($330k)
+    riskTolerance: 'balanced', // 'conservative' | 'balanced' | 'aggressive'
+    holdingCostFactor: 0.35, // unsold inventory markdown loss penalty
+    shortagePenaltyFactor: 0.45, // lost future customer lifetime value & margin
+    targetGrossMarginPct: 32.5,
+    demandGrowthOverridePct: 0.0 // what-if slider
+  };
+
+  const AxiomData = {
+    DISCLOSURE: 'Demonstration data — synthetic, not live TBO data.',
+    DESTINATIONS: DESTINATIONS,
+    SUPPLIERS: SUPPLIERS,
+    INVENTORY: INVENTORY,
+    TIME_SERIES: TIME_SERIES,
+    DEFAULT_CONFIG: DEFAULT_CONFIG
+  };
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = AxiomData;
+  }
+  if (typeof window !== 'undefined') {
+    window.AxiomData = AxiomData;
+  }
+})(typeof window !== 'undefined' ? window : global);
